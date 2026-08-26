@@ -8,17 +8,51 @@ Currently implemented: **Unit 1 — Exploring One-Variable Data**. Units 2–9 a
 listed on the menu but greyed out.
 
 ```
+StatsApp.tns        built and ready to drag onto the calculator
 src/apstats.lua     the app (this is what goes inside the .tns)
+build.ps1           rebuilds StatsApp.tns from the Lua
+tools/luna.exe      the packager (gitignored -- see "Rebuilding" below)
 tests/harness.lua   fake TI-Nspire environment + assertions
 tests/run.py        runs the harness in a real Lua 5.1 interpreter
 ```
 
+## Quick start
+
+**`StatsApp.tns` is already built.** Plug in the handheld and drag it across in
+the TI-Nspire software's Content Explorer, or open it there directly.
+
+It's stamped document version 5, which is what Luna v2.1 emits and what
+TI-Planet's builder produces too. That's fine for a CX / CX II on a current OS.
+If a much older handheld rejects it with "document format is not supported",
+that version stamp is the thing to change.
+
+Everything below is only needed if you edit the Lua.
+
 ---
 
-## Building the .tns
+## Rebuilding
 
-The `.tns` is a container format that only TI's tooling writes, so the Lua has
-to be packaged. Pick whichever route you have access to.
+```powershell
+.\build.ps1
+```
+
+That calls `tools/luna.exe` and rewrites `StatsApp.tns`. The build is
+deterministic -- same Lua in, byte-identical `.tns` out.
+
+`tools/luna.exe` is gitignored because it's a build tool, not source. It was
+produced from [Luna](https://github.com/ndless-nspire/Luna)'s official v2.1
+source compiled against zlib 1.3.1, with two shim headers (`strings.h`,
+`unistd.h`) to cover the POSIX includes `luna.c` expects. To recreate it, or if
+you'd rather not run a binary you didn't build, see the routes below.
+
+---
+
+## Building the .tns another way
+
+The `.tns` is a PK-ZIP variant with a `*TIMLP` magic header, a `TIPD`
+end-of-directory signature, and DES-encrypted XML stored under TI's proprietary
+compression method 13 -- so the Lua genuinely has to be packaged by a tool.
+Pick whichever route you have access to.
 
 ### A. TI-Nspire Student / Teacher Software (the official route)
 

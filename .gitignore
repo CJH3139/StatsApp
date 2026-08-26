@@ -1,0 +1,6 @@
+# Luna is a build tool, not source.  build.ps1 explains how to get it.
+tools/luna.exe
+
+# Python test-runner cruft
+__pycache__/
+*.pyc
